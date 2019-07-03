@@ -30,6 +30,6 @@ public class Event {
     private boolean offline;
     private boolean free;
     @Enumerated(EnumType.STRING) //ORDINAL 은 ENUM의 순서대로 번호저장
-    private EventStatus eventStatus;
+    private EventStatus eventStatus = EventStatus.DRAFT;
 
 }
