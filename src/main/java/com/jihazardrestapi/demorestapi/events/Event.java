@@ -2,6 +2,7 @@ package com.jihazardrestapi.demorestapi.events;
 
 import lombok.*;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Builder
@@ -11,9 +12,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-
+@Entity
 //@Data 어노테이션을 쓰지 않는 이유는 EqualsAndHash 코드를 모든 항목을 참조하여 만들기 때문에 스택오브플로우가 발생할 가능성이 있어서 쓰면안됨
 public class Event {
+    @Id @GeneratedValue
     private Integer id;
     private String name;
     private String description;
@@ -27,6 +29,7 @@ public class Event {
     private int limitOfEnrollment;
     private boolean offline;
     private boolean free;
+    @Enumerated(EnumType.STRING) //ORDINAL 은 ENUM의 순서대로 번호저장
     private EventStatus eventStatus;
 
 }

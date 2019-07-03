@@ -1,5 +1,6 @@
 package com.jihazardrestapi.demorestapi.events;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +16,15 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 @Controller
 @RequestMapping(value = "/api/events",produces = MediaTypes.HAL_JSON_UTF8_VALUE)
 public class EventController {
+    @Autowired
+    EventRepository eventRepository;
+
+
 
     @PostMapping
     public ResponseEntity createEvent(@RequestBody Event event){
-        URI createUri = linkTo(EventController.class).slash("{id}").toUri();
+        Event newEvent = this.eventRepository.save(event);
+        URI createUri = linkTo(EventController.class).slash(newEvent.getId()).toUri();
         System.out.println(event.toString());
         event.setId(10000);
         return ResponseEntity.created(createUri).body(event);
