@@ -17,13 +17,14 @@ class EventTest {
         String name = "EVENT";
         String description = "SPRING";
 
+
         //WHEN
         event.setName(name);
         event.setDescription(description);
 
         //then
         assertThat(event.getName()).isEqualTo("EVENT");
-        assertThat(event.getDescription()).isEqualTo("SPRING");
+        assertThat(event.getDescription()).isEqualTo(description);
 
     }
 }
