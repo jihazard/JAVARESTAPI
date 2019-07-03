@@ -3,8 +3,9 @@ package com.jihazardrestapi.demorestapi.events;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
-class EventTest {
+public class EventTest2 {
     @Test
     public void builder() {
         Event event = Event.builder().build();
