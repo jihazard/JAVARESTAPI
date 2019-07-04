@@ -37,7 +37,40 @@ public class EventTestController {
     @Test
     public void createEvent() throws Exception {
 
-        Event event = Event.builder().name("Spring").description("REST API Development").id(100)
+        Event event = Event.builder()
+                .name("Spring")
+                .description("REST API Development")
+                .beginEventDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+                .closeEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+                .beginEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+                .endEventDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+                .basePrice(100)
+                .maxPrice(200)
+                .limitOfEnrollment(100)
+                .location("가산디지털단지역").build();
+        //event repository 리턴값 설정 " mockbean 으로는 리턴값이 null 이기 때문에 mockito로 리턴값을 설정해줘야 합니다.
+        //Mockito.when(eventRepository.save(event)).thenReturn(event);
+
+        mockMvc.perform(post("/api/events")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .accept(MediaTypes.HAL_JSON)
+                .content(objectMapper.writeValueAsString(event)))
+                .andDo(print())
+                .andExpect(status().isCreated())//Expect Result : 201
+                .andExpect(jsonPath("id").exists())
+                .andExpect(header().exists(HttpHeaders.LOCATION))
+        .andExpect(jsonPath("eventStatus").value(Matchers.not(EventStatus.DRAFT))); // return value id가 존재하는지
+        //        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+        //.andExpect(jsonPath("free").value(Matchers.not(true))); // return value id가 존재하는지
+
+
+    }@Test
+    public void badRequest() throws Exception {
+
+        Event event = Event.builder()
+                .name("Spring")
+                .description("REST API Development")
+                .id(100)
                 .beginEventDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
                 .closeEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
                 .beginEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
@@ -54,12 +87,8 @@ public class EventTestController {
                 .accept(MediaTypes.HAL_JSON)
                 .content(objectMapper.writeValueAsString(event)))
                 .andDo(print())
-                .andExpect(status().isCreated())//Expect Result : 201
-                .andExpect(jsonPath("id").exists())
-                .andExpect(header().exists(HttpHeaders.LOCATION))
-        .andExpect(jsonPath("eventStatus").value(Matchers.not(EventStatus.DRAFT))); // return value id가 존재하는지
-        //        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
-        //.andExpect(jsonPath("free").value(Matchers.not(true))); // return value id가 존재하는지
+                .andExpect(status().isBadRequest())
+        ;
 
 
     }
