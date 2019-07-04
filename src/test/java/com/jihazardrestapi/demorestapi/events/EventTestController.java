@@ -1,6 +1,7 @@
 package com.jihazardrestapi.demorestapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jihazardrestapi.demorestapi.common.TestDescription;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +36,7 @@ public class EventTestController {
 //    EventRepository eventRepository;
 
     @Test
+    @TestDescription("이벤트 생성 ")
     public void createEvent() throws Exception {
 
         Event event = Event.builder()
@@ -65,6 +67,7 @@ public class EventTestController {
 
 
     }@Test
+    @TestDescription("배드 리퀘스트 요청인 경우")
     public void badRequest() throws Exception {
 
         Event event = Event.builder()
@@ -94,6 +97,7 @@ public class EventTestController {
     }
 
     @Test
+    @TestDescription("배드 입력값이 비어있을 경우")
     public void createEvent_Bad_Request_Empty_Input()throws Exception{
         EventDto eventDto = EventDto.builder().build();
 
@@ -105,6 +109,7 @@ public class EventTestController {
 
 
     @Test
+    @TestDescription("배드 리퀘스트 요청이 잘못되었을 경우")
     public void createEvent_Bad_Request_Wrong_Input()throws Exception{
         EventDto eventDto = EventDto.builder().name("Spring")
                 .description("REST API Development")
