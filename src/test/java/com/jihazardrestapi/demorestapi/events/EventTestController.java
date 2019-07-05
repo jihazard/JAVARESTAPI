@@ -64,8 +64,11 @@ public class EventTestController {
         .andExpect(jsonPath("eventStatus").value(Matchers.not(EventStatus.DRAFT))) // return value id가 존재하는지
         .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
         .andExpect(jsonPath("free").value(false)) // return value id가 존재하는지
-        .andExpect(jsonPath("offline").value(true)); // return value id가 존재하는지
-
+        .andExpect(jsonPath("offline").value(true)) // return value id가 존재하는지
+        .andExpect(jsonPath("_links.self").exists())
+        .andExpect(jsonPath("_links.query-events").exists())
+        .andExpect(jsonPath("_links.update-event").exists())
+        ;
 
     }
 
