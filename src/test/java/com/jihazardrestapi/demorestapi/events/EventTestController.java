@@ -39,13 +39,13 @@ public class EventTestController {
     @TestDescription("이벤트 생성 ")
     public void createEvent() throws Exception {
 
-        Event event = Event.builder()
+        EventDto event = EventDto.builder()
                 .name("Spring")
                 .description("REST API Development")
-                .beginEventDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
-                .closeEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+                .beginEventDateTime(LocalDateTime.of(2019, 07, 02, 10, 14))
+                .closeEnrollmentDateTime(LocalDateTime.of(2019, 07, 03, 11, 14))
                 .beginEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
-                .endEventDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+                .endEventDateTime(LocalDateTime.of(2019, 07, 04, 11, 14))
                 .basePrice(100)
                 .maxPrice(200)
                 .limitOfEnrollment(100)
@@ -61,9 +61,10 @@ public class EventTestController {
                 .andExpect(status().isCreated())//Expect Result : 201
                 .andExpect(jsonPath("id").exists())
                 .andExpect(header().exists(HttpHeaders.LOCATION))
-        .andExpect(jsonPath("eventStatus").value(Matchers.not(EventStatus.DRAFT))); // return value id가 존재하는지
-        //        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
-        //.andExpect(jsonPath("free").value(Matchers.not(true))); // return value id가 존재하는지
+        .andExpect(jsonPath("eventStatus").value(Matchers.not(EventStatus.DRAFT))) // return value id가 존재하는지
+        .andExpect(header().string(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE))
+        .andExpect(jsonPath("free").value(false)) // return value id가 존재하는지
+        .andExpect(jsonPath("offline").value(true)); // return value id가 존재하는지
 
 
     }@Test
