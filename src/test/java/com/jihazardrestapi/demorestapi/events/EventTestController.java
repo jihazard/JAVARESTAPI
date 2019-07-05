@@ -67,7 +67,9 @@ public class EventTestController {
         .andExpect(jsonPath("offline").value(true)); // return value id가 존재하는지
 
 
-    }@Test
+    }
+
+    @Test
     @TestDescription("배드 리퀘스트 요청인 경우")
     public void badRequest() throws Exception {
 
