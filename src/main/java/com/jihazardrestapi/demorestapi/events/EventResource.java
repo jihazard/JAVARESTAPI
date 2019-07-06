@@ -29,6 +29,7 @@ public class EventResource extends Resource<Event> {
         add(selfBuilder.withSelfRel());
         add(linkTo(EventController.class).withRel("query-events"));
         add(selfBuilder.withRel("update-event"));
+        add(new Link("/docs/index.html").withRel("profile"));
 
     }
 }
