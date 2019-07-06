@@ -1,5 +1,6 @@
 package com.jihazardrestapi.demorestapi.events;
 
+import com.jihazardrestapi.demorestapi.common.ErrorResource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
@@ -35,7 +36,7 @@ public class EventController {
     @PostMapping
     public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
         if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(errors);
+            return ResponseEntity.badRequest().body(new ErrorResource(errors));
         }
 
         eventValidator.validate(eventDto, errors);
