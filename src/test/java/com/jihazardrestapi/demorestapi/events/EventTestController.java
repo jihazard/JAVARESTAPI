@@ -224,9 +224,33 @@ public class EventTestController {
                 .andExpect(jsonPath("page").exists())
                 .andExpect(jsonPath("_embedded.eventList[1]._links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
-                .andDo(document("query-events"))
-        ;
+                .andDo(document("query-events"));
+//                .andDo(document("first"), links(
+//                        linkWithRel("first").description("first is list size 0 to 10"),
+//                        linkWithRel("prev").description("prev page"),
+//                        linkWithRel("self").description("self is current page"),
+//                        linkWithRel("next").description("next is first  + 10 page"),
+//                        linkWithRel("last").description("last is last page - 10 page"),
+//                        linkWithRel("profile").description("link to profile")
+//
+//
+//                ), requestFields(
+//                        fieldWithPath("size").description("size is size"),
+//                        fieldWithPath("page").description("Name of new description"),
+//                        fieldWithPath("sort").description("data sort type DESC"),
+//                        fieldWithPath("closeEnrollmentDateTime").description("Name of new closeEnrollmentDateTime")
+//
+//                ), responseFields(
+//                        fieldWithPath("size").description("Name of new event"),
+//                        fieldWithPath("totalElements").description("totalElements is Total Number of Element"),
+//                        fieldWithPath("totalPages").description("totalPages is Total Number of page"),
+//                        fieldWithPath("number").description("number is pageNumber")
+//                        )
+//
+//                ));
         //then
+
+
     }
 
     private void generateEvent(int i) {
