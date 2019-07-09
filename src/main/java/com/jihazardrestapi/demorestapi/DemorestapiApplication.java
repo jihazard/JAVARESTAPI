@@ -13,8 +13,4 @@ public class DemorestapiApplication {
         SpringApplication.run(DemorestapiApplication.class, args);
     }
 
-    @Bean
-    public ModelMapper modelMapper(){
-        return new ModelMapper();
-    }
 }
