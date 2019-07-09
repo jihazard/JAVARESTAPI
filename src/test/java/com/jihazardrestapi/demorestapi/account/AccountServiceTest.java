@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -23,6 +24,10 @@ public class AccountServiceTest {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+
     @Test
     public void  findByUsername() {
         //given
@@ -37,13 +42,13 @@ public class AccountServiceTest {
                 .roles(set)
                 .build();
 
-        this.accountRepository.save(account);
+        this.accountService.saveAccount(account);
 
         //WHEN
         UserDetailsService userDetailsService = accountService;
         UserDetails user = userDetailsService.loadUserByUsername(username);
 
         //THEN
-        assertThat(user.getPassword()).isEqualTo(password);
+        assertThat(this.passwordEncoder.matches(password, user.getPassword())).isTrue();
     }
 }
