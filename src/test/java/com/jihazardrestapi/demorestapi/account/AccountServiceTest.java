@@ -41,7 +41,7 @@ public class AccountServiceTest {
 
         //WHEN
         UserDetailsService userDetailsService = accountService;
-        UserDetails user = userDetailsService.loadUserByUsername(password);
+        UserDetails user = userDetailsService.loadUserByUsername(username);
 
         //THEN
         assertThat(user.getPassword()).isEqualTo(password);
