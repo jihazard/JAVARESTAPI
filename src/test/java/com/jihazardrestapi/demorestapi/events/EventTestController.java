@@ -1,6 +1,7 @@
 package com.jihazardrestapi.demorestapi.events;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jihazardrestapi.demorestapi.common.BaseControllerTest;
 import com.jihazardrestapi.demorestapi.common.RestDocConfiguration;
 import com.jihazardrestapi.demorestapi.common.TestDescription;
 import org.hamcrest.Matchers;
@@ -38,24 +39,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs
-@Import(RestDocConfiguration.class)
-@ActiveProfiles("test")
-public class EventTestController {
-    @Autowired
-    MockMvc mockMvc;
-
-    @Autowired
-    ObjectMapper objectMapper; //자동으로 빈으로 등록함
+public class EventTestController extends BaseControllerTest {
 
     @Autowired
     EventRepository eventRepository;
 
-    @Autowired
-    ModelMapper modelMapper;
 
 //    @MockBean
 //    EventRepository eventRepository;
