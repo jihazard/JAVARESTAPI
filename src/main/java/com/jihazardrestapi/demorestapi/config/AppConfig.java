@@ -3,6 +3,9 @@ package com.jihazardrestapi.demorestapi.config;
 import com.jihazardrestapi.demorestapi.account.Account;
 import com.jihazardrestapi.demorestapi.account.AccountRole;
 import com.jihazardrestapi.demorestapi.account.AccountService;
+import com.jihazardrestapi.demorestapi.events.Event;
+import com.jihazardrestapi.demorestapi.events.EventDto;
+import com.jihazardrestapi.demorestapi.events.EventRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -12,14 +15,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
 @Configuration
 public class AppConfig {
-
-
-
 
     @Bean
     public ModelMapper modelMapper(){
@@ -38,6 +39,12 @@ public class AppConfig {
             @Autowired
             AccountService accountService;
 
+            @Autowired
+            EventRepository eventRepository;
+
+            @Autowired
+            ModelMapper modelMapper;
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
                 Set<AccountRole> roles = new HashSet<>();
@@ -51,6 +58,22 @@ public class AppConfig {
                         .roles(roles)
                         .build();
 
+                EventDto eventDto = EventDto.builder().name("Spring")
+                        .description("REST API Development")
+                        .beginEventDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+                        .closeEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+                        .beginEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+                        .endEventDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+                        .basePrice(10000)
+                        .maxPrice(200)
+                        .limitOfEnrollment(100)
+                        .location("가산디지털단지역").build();
+                Event event = modelMapper.map(eventDto, Event.class);
+
+
+
+
+                eventRepository.save(event);
                 accountService.saveAccount(account);
             }
         };
