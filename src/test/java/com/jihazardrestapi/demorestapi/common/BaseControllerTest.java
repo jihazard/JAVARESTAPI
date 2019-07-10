@@ -1,6 +1,7 @@
 package com.jihazardrestapi.demorestapi.common;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jihazardrestapi.demorestapi.account.AccountService;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.modelmapper.ModelMapper;
@@ -30,5 +31,7 @@ public class BaseControllerTest {
 
     @Autowired
     public ModelMapper modelMapper;
+
+
 
 }

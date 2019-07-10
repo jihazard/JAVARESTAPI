@@ -33,8 +33,8 @@ public class Event {
     @Enumerated(EnumType.STRING) //ORDINAL 은 ENUM의 순서대로 번호저장
     private EventStatus eventStatus = EventStatus.DRAFT;
 
-    @ManyToOne
-    private Account manger;
+//    @ManyToOne
+//    private Account manger;
 
     public void update() {
         if(this.basePrice == 0 && this.maxPrice == 0) this.free = true;
