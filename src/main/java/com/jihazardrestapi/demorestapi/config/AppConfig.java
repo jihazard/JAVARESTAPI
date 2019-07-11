@@ -48,6 +48,8 @@ public class AppConfig {
             @Autowired
             AppProperties appProperties;
 
+            @Autowired
+            PasswordEncoder passwordEncoder;
 
             @Override
             public void run(ApplicationArguments args) throws Exception {
@@ -64,31 +66,30 @@ public class AppConfig {
 
                 accountService.saveAccount(account);
 
-                roles.remove(AccountRole.ADMIN);
                 Account user= Account.builder()
                         .email(appProperties.getUserName())
                         .password(appProperties.getUserPassword())
                         .roles(roles)
                         .build();
 
-                accountService.saveAccount(account);
+                accountService.saveAccount(user);
 
-                EventDto eventDto = EventDto.builder().name("Spring")
-                        .description("REST API Development")
-                        .beginEventDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
-                        .closeEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
-                        .beginEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
-                        .endEventDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
-                        .basePrice(10000)
-                        .maxPrice(200)
-                        .limitOfEnrollment(100)
-                        .location("가산디지털단지역").build();
-                Event event = modelMapper.map(eventDto, Event.class);
-
-
-
-
-                eventRepository.save(event);
+//                EventDto eventDto = EventDto.builder().name("Spring")
+//                        .description("REST API Development")
+//                        .beginEventDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+//                        .closeEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+//                        .beginEnrollmentDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+//                        .endEventDateTime(LocalDateTime.of(2019, 07, 02, 11, 14))
+//                        .basePrice(10000)
+//                        .maxPrice(200)
+//                        .limitOfEnrollment(100)
+//                        .location("가산디지털단지역").build();
+//                Event event = modelMapper.map(eventDto, Event.class);
+//
+//
+//
+//
+//                eventRepository.save(event);
 
             }
         };
