@@ -35,7 +35,7 @@ public class AccountServiceTest {
         set.add(AccountRole.USER);
         set.add(AccountRole.ADMIN);
         String password = "jihwan";
-        String username = "yoonjh238@gmail.com";
+        String username = "yoonjh238333@gmail.com";
         Account account = Account.builder()
                 .email(username)
                 .password(password)

@@ -45,6 +45,10 @@ public class AppConfig {
             @Autowired
             ModelMapper modelMapper;
 
+            @Autowired
+            AppProperties appProperties;
+
+
             @Override
             public void run(ApplicationArguments args) throws Exception {
                 Set<AccountRole> roles = new HashSet<>();
@@ -53,10 +57,21 @@ public class AppConfig {
 
 
                 Account account= Account.builder()
-                        .email("yoonjh238@gmail.com")
-                        .password("1234")
+                        .email(appProperties.getAdminUsername())
+                        .password(appProperties.getAdminPassword())
                         .roles(roles)
                         .build();
+
+                accountService.saveAccount(account);
+
+                roles.remove(AccountRole.ADMIN);
+                Account user= Account.builder()
+                        .email(appProperties.getUserName())
+                        .password(appProperties.getUserPassword())
+                        .roles(roles)
+                        .build();
+
+                accountService.saveAccount(account);
 
                 EventDto eventDto = EventDto.builder().name("Spring")
                         .description("REST API Development")
@@ -74,7 +89,7 @@ public class AppConfig {
 
 
                 eventRepository.save(event);
-                accountService.saveAccount(account);
+
             }
         };
     }
