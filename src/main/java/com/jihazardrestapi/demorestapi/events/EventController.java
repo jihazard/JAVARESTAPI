@@ -1,5 +1,8 @@
 package com.jihazardrestapi.demorestapi.events;
 
+import com.jihazardrestapi.demorestapi.account.Account;
+import com.jihazardrestapi.demorestapi.account.AccountAdapter;
+import com.jihazardrestapi.demorestapi.account.CurrentUser;
 import com.jihazardrestapi.demorestapi.common.ErrorResource;
 import lombok.var;
 import org.modelmapper.ModelMapper;
@@ -10,8 +13,13 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.mvc.ControllerLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +35,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 @RequestMapping(value = "/api/events", produces = MediaTypes.HAL_JSON_UTF8_VALUE)
 public class EventController {
     @Autowired
-    EventRepository eventRepository;
+     EventRepository eventRepository;
 
     @Autowired
     ModelMapper modelMapper;
@@ -39,7 +47,9 @@ public class EventController {
     }
 
     @PostMapping
-    public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors) {
+    public ResponseEntity createEvent(@RequestBody @Valid EventDto eventDto, Errors errors
+                                    ,@CurrentUser Account currentUser) {
+
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(new ErrorResource(errors));
         }
@@ -51,6 +61,7 @@ public class EventController {
 
         Event event = modelMapper.map(eventDto, Event.class);
         event.update();
+        event.setManger(currentUser);
         Event newEvent = this.eventRepository.save(event);
         ControllerLinkBuilder selfLinkBuilder = linkTo(EventController.class).slash(newEvent.getId());
         URI createUri = selfLinkBuilder.toUri();
@@ -64,16 +75,25 @@ public class EventController {
 
 
     @GetMapping
-    public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler){
+    public ResponseEntity queryEvents(Pageable pageable, PagedResourcesAssembler<Event> assembler,
+                                      @CurrentUser Account account){
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        User principal = (User) authentication.getPrincipal();
+
+
         Page<Event> page = this.eventRepository.findAll(pageable);
         var pageResource = assembler.toResource(page , e -> new EventResource(e));
         pageResource.add(new Link("/docs/index.html#resources-events-list").withRel("profile"));
+
+        if(account != null) {
+            pageResource.add(linkTo(EventController.class).withRel("create-events"));
+        }
         return ResponseEntity.ok(pageResource);
 
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity getEvent(@PathVariable Integer id){
+    public ResponseEntity getEvent(@PathVariable Integer id, @CurrentUser Account currentUser){
         Optional<Event> optional =  this.eventRepository.findById(id);
 
         if(!optional.isPresent())
@@ -82,6 +102,9 @@ public class EventController {
         Event event = optional.get();
         EventResource eventResource = new EventResource(event);
         eventResource.add(new Link("/docs/index.html#resources-events-get").withRel("profile"));
+        if(event.getManger().equals(currentUser)){
+            eventResource.add(linkTo(EventController.class).slash(event.getId()).withRel("update-event"));
+        }
 
         return ResponseEntity.ok(eventResource);
     }
@@ -89,7 +112,8 @@ public class EventController {
     @PutMapping("/{id}")
     public ResponseEntity updateEvent(@PathVariable Integer id
                                     , @RequestBody @Valid EventDto eventDto
-                                    , Errors errors){
+                                    , Errors errors
+                                    ,@CurrentUser Account currentUser){
             Optional<Event> optional = this.eventRepository.findById(id);
             if(!optional.isPresent()){
                 return ResponseEntity.notFound().build();
@@ -105,6 +129,10 @@ public class EventController {
               }
 
               Event exEvent = optional.get();
+
+              if(!exEvent.getManger().equals(currentUser)){
+                  return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+              }
               this.modelMapper.map(eventDto,exEvent);
               Event save = this.eventRepository.save(exEvent);
 

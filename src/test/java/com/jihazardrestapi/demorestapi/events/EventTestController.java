@@ -113,7 +113,7 @@ public class EventTestController extends BaseControllerTest {
                                 headerWithName(HttpHeaders.ACCEPT).description("accept header"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type header")
                         ),
-                        requestFields(
+                        relaxedRequestFields(
                                 fieldWithPath("name").description("Name of new event"),
                                 fieldWithPath("description").description("Name of new description"),
                                 fieldWithPath("beginEnrollmentDateTime").description("Name of new beginEnrollmentDateTime"),
@@ -129,7 +129,7 @@ public class EventTestController extends BaseControllerTest {
                                 headerWithName(HttpHeaders.LOCATION).description("location header"),
                                 headerWithName(HttpHeaders.CONTENT_TYPE).description("content type")
                         )
-                        , responseFields(
+                        , relaxedResponseFields(
                                 fieldWithPath("id").description("Name of new id"),
                                 fieldWithPath("name").description("Name of new event"),
                                 fieldWithPath("description").description("Name of new description"),
@@ -306,6 +306,52 @@ public class EventTestController extends BaseControllerTest {
 
     }
 
+
+    @Test
+    @TestDescription("30개의 이벤트를 10개씩 두번째 페이지 조회")
+    public void getQueryEventsWithAuth() throws Exception {
+        //Given
+        IntStream.range(0, 30).forEach(this::generateEvent);
+        //when
+        this.mockMvc.perform(get("/api/events")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken(8))
+                .param("page", "1")
+                .param("size", "10")
+                .param("sort", "name,DESC")
+        ).andDo(print()).andExpect(status().isOk())
+                .andExpect(jsonPath("page").exists())
+                .andExpect(jsonPath("_embedded.eventList[1]._links.self").exists())
+                .andExpect(jsonPath("_links.profile").exists())
+                .andExpect(jsonPath("_links.create-events").exists())
+                .andDo(document("query-events"));
+//                .andDo(document("query-events"), links(
+//                        linkWithRel("first").description("first is list size 0 to 10"),
+//                        linkWithRel("prev").description("prev page"),
+//                        linkWithRel("self").description("self is current page"),
+//                        linkWithRel("next").description("next is first  + 10 page"),
+//                        linkWithRel("last").description("last is last page - 10 page"),
+//                        linkWithRel("profile").description("link to profile")
+//
+//
+//                ), requestFields(
+//                        fieldWithPath("size").description("size is size"),
+//                        fieldWithPath("page").description("Name of new description"),
+//                        fieldWithPath("sort").description("data sort type DESC"),
+//                        fieldWithPath("closeEnrollmentDateTime").description("Name of new closeEnrollmentDateTime")
+//
+//                ), responseFields(
+//                        fieldWithPath("size").description("Name of new event"),
+//                        fieldWithPath("totalElements").description("totalElements is Total Number of Element"),
+//                        fieldWithPath("totalPages").description("totalPages is Total Number of page"),
+//                        fieldWithPath("number").description("number is pageNumber")
+//                        )
+//
+//                ));
+        //then
+
+
+    }
+
     private Event generateEvent(int i) {
         Event event = Event.builder().name("event " + i).description("event test").
                  beginEventDateTime(LocalDateTime.of(2019, 07, 02, 10, 14))
@@ -336,7 +382,6 @@ public class EventTestController extends BaseControllerTest {
                 .andExpect(jsonPath("_links.self").exists())
                 .andExpect(jsonPath("_links.profile").exists())
         .andDo(document("get-an-event"));
-
     }
 
 
@@ -413,7 +458,8 @@ public class EventTestController extends BaseControllerTest {
 
         //when then
 
-        this.mockMvc.perform(put("/api/events/1111").header(HttpHeaders.AUTHORIZATION, getBearerToken(8))
+        this.mockMvc.perform(put("/api/events/1111")
+                .header(HttpHeaders.AUTHORIZATION, getBearerToken(8))
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content(this.objectMapper.writeValueAsString(eventDto)))
                 .andDo(print())

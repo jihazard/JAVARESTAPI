@@ -1,6 +1,7 @@
 package com.jihazardrestapi.demorestapi.account;
 
 import lombok.*;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -18,6 +19,7 @@ public class Account {
     private Integer id;
     @Column(unique = true)
     private String email;
+
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
